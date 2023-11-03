@@ -8,33 +8,53 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css">
 
+        <script src="main.js"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
     </head>
     <body>
         <h1>Pronoun Space</h1>
         <p> My pronouns are:
-            \(\frac{4}{\sqrt{17}}\overrightarrow{\text{she/her}} + \frac{1}{\sqrt{17}}\overrightarrow{\text{they/them}}\),
+            \(\frac{1}{\sqrt{17}}\overrightarrow{\text{they/them}} + \frac{4}{\sqrt{17}}\overrightarrow{\text{she/her}}\),
             an element of a pronoun vector space!
         </p>
 
         <p>
             Ever wanted an <s>overcomplicated</s> more accurate way to represent your pronouns in your bio?
             Felt limited by the ambiguity of a single list like she/they?
-        This solution is <em>so</em> obvious <s>and terrible</s> in hindsight.
+            This solution is so <em>obvious</em> <s>and terrible</s> in hindsight.
         </p>
 
         <p>Each set of pronouns is a basis vector, with magnitude of the vector representing how much you like each pronoun being used.</p>
 
         <h2>Create your own here!</h2>
-        TODO: actually do the thing.
+        <p>The inputs are used as coefficients, with the bottom vector being normalized.</p>
 
-        <h2>Pronoun Vector Space Proof Pedantry</h2>
+        <div>
+            <div id="input-boxes">
+            </div>
+
+            <template id="input-box">
+                <label class="coefficient-label"><!--pronoun goes here--></label>
+                <input class="coefficient-input" type="number" type="number" value="1" onchange="render_output()">
+                <br>
+            </template>
+
+
+            <div id="output-unnormalized"></div>
+            <div id="output-normalized"></div>
+
+            <label for="custom-pronoun-set">Add a Custom Pronoun Set:</label>
+            <input type="text" id="custom-pronoun-set" placeholder="fae/faer" onkeydown="if (event.keyCode == 13) add_pronoun_set()">
+            <button type="button"onclick="add_pronoun_set()">Add</button>
+        </div>
+
+        <h2>Pronoun Vector Space Pedantry</h2>
         To demonstrate this is a vector space, let us first define it more carefully.
 
         Let us call the space \(V_p\). We start with \(n\) individual pronoun sets (e.g. she/her, they/them, xe/xer). We define these as unit vectors in \(V_p\), forming the set \(B\), which is a subset of \(V_p\). Since we represent all pronoun vectors as a sum of scalars times unique basis vectors, any \(v \in V_p\) can be rewritten as,
         $$v=\sum_{i=1}^n c_i b_i : c_i \in \mathbb{R}, b_i \in B$$
 
-        The ordering of both basis vectors and their corresponding coefficients is arbitrary, but remains consistent for all vectors.
+        The ordering of both basis vectors and their corresponding coefficients is arbitrary, but remains consistent for all vectors. Here, we arbitrarily choose to order basis vectors alphabetically be their pronoun set name.
 
         For \(v, w \in V_p\), let \(c_v\) be \(c\) for \(v\) and \(c_w\) to be \(c\) for \(w\). Then, let us define addition of two vectors as follows:
         $$v+w=\sum_{i=1}^n ({c_v}_i + {c_w}_i)b_i$$
@@ -42,70 +62,72 @@
         Let us define multiplication of a vector \(v \in V_p\) by a scalar \(s \in \mathbb{R}\) as follows:
         $$sv = \sum_{i=1}^n (sc_i) b_i$$
 
-        Now, we can get to proving the vector space properties.
+        <details>
+            <summary>Proving the vector space properties. (Click to expand.)</summary>
 
-        <h3>Addition is commutative</h3>
-        We want to show that \(\forall v, w \in V_p, v+w=w+v\). Let us use the definition of addition on \(v+w\):
+            <h3>Addition is commutative</h3>
+            We want to show that \(\forall v, w \in V_p, v+w=w+v\). Let us use the definition of addition on \(v+w\):
 
-        $$v+w=\sum_{i=1}^n ({c_v}_i + {c_w}_i)b_i$$
+            $$v+w=\sum_{i=1}^n ({c_v}_i + {c_w}_i)b_i$$
 
-        Note that \({c_v}_i\) and \({c_w}_i\) are both real numbers. Since addition of real numbers is commutative, \({c_v}_i + {c_w}_i = {c_w}_i + {c_v}_i \). Hence,
+            Note that \({c_v}_i\) and \({c_w}_i\) are both real numbers. Since addition of real numbers is commutative, \({c_v}_i + {c_w}_i = {c_w}_i + {c_v}_i \). Hence,
 
-        $$v+w=\sum_{i=1}^n ({c_w}_i + {c_v}_i)b_i$$
+            $$v+w=\sum_{i=1}^n ({c_w}_i + {c_v}_i)b_i$$
 
-        Note the right-hand side is \(w+v\) by definition, so \(v+w=w+v\).
+            Note the right-hand side is \(w+v\) by definition, so \(v+w=w+v\).
 
-        <h3>Addition is associative</h3>
-        We want to show that \(\forall u,v,w \in V_p, u+(v+w)=(u+v)+w\). By definition:
+            <h3>Addition is associative</h3>
+            We want to show that \(\forall u,v,w \in V_p, u+(v+w)=(u+v)+w\). By definition:
 
-        $$u+(v+w) = u+\sum_{i=1}^n ({c_v}_i + {c_w}_i)b_i$$
+            $$u+(v+w) = u+\sum_{i=1}^n ({c_v}_i + {c_w}_i)b_i$$
 
-        Let us note that \(v+w\) is a vector, with coefficients \({c_v}_i+{c_w}_i\).
+            Let us note that \(v+w\) is a vector, with coefficients \({c_v}_i+{c_w}_i\).
 
-        By applying the definition of addition between \(u\) and \(v+w\):
+            By applying the definition of addition between \(u\) and \(v+w\):
 
-        $$u+(v+w)=\sum_{i=1}^n ({c_u}_i+({c_v}_i + {c_w}_i))b_i$$
+            $$u+(v+w)=\sum_{i=1}^n ({c_u}_i+({c_v}_i + {c_w}_i))b_i$$
 
-        Since \({c_u}_i, {c_v}_i, {c_w}_i\in\mathbb{R}\), and real number addition is associative so
+            Since \({c_u}_i, {c_v}_i, {c_w}_i\in\mathbb{R}\), and real number addition is associative so
 
-        $${c_u}_i+({c_v}_i + {c_w}_i) = ({c_u}_i+{c_v}_i) + {c_w}_i$$
+            $${c_u}_i+({c_v}_i + {c_w}_i) = ({c_u}_i+{c_v}_i) + {c_w}_i$$
 
-        Therefore,
-        $$u+(v+w)=\sum_{i=1}^n (({c_u}_i+{c_v}_i) + {c_w}_i)b_i=\sum_{i=1}^n ({c_u}_i+{c_v}_i)b_i+w=(u+v)+w$$
+            Therefore,
+            $$u+(v+w)=\sum_{i=1}^n (({c_u}_i+{c_v}_i) + {c_w}_i)b_i=\sum_{i=1}^n ({c_u}_i+{c_v}_i)b_i+w=(u+v)+w$$
 
-        <h3>Additive identity</h3>
-        We want to show that there is a vector \(\vec{0}\in V_p\) such that \(\forall v\in V_p, \vec{0}+v=v\). This can be done by construction, as it is the vector for which \(c_i=0\) (for all \(i\) such that \(1\leq i \leq n\)). This vector is also known as the nonoun vector.
+            <h3>Additive identity</h3>
+            We want to show that there is a vector \(\vec{0}\in V_p\) such that \(\forall v\in V_p, \vec{0}+v=v\). This can be done by construction, as it is the vector for which \(c_i=0\) (for all \(i\) such that \(1\leq i \leq n\)). This vector is also known as the nonoun vector.
 
-        $$\vec{0}+v=\sum_{i=1}^n (0 + {c_v}_i)b_i\sum_{i=1}^n ({c_v}_i)b_i=v$$
+            $$\vec{0}+v=\sum_{i=1}^n (0 + {c_v}_i)b_i\sum_{i=1}^n ({c_v}_i)b_i=v$$
 
-        <h3>Additive inverse</h3>
-        We want to show that for each \(v\in V_p\) there is a vector \(-v\in V_p\) such that \(-v+v=\vec{0}\). This can be, once again, done by construction: for a given vector \(v\), let \(-v\) be the vector such that \({c_{-v}}_i=-{c_{v}}_i\).
+            <h3>Additive inverse</h3>
+            We want to show that for each \(v\in V_p\) there is a vector \(-v\in V_p\) such that \(-v+v=\vec{0}\). This can be, once again, done by construction: for a given vector \(v\), let \(-v\) be the vector such that \({c_{-v}}_i=-{c_{v}}_i\).
 
-        $$-v+v=\sum_{i=1}^n ({c_{-v}}_i + {c_v}_i)b_i=\sum_{i=1}^n (-{c_v}_i + {c_v}_i)b_i=\sum_{i=1}^n 0b_i$$
+            $$-v+v=\sum_{i=1}^n ({c_{-v}}_i + {c_v}_i)b_i=\sum_{i=1}^n (-{c_v}_i + {c_v}_i)b_i=\sum_{i=1}^n 0b_i$$
 
-        Thus, \(-v+v\) is nothing but the nonoun vector, \(\vec{0}\).
+            Thus, \(-v+v\) is nothing but the nonoun vector, \(\vec{0}\).
 
-        <h3>Multiplicative identity</h3>
-        We want to show that \(1\) has the property \(1v=v\) for all \(v\in V_p\). We can show this directly:
+            <h3>Multiplicative identity</h3>
+            We want to show that \(1\) has the property \(1v=v\) for all \(v\in V_p\). We can show this directly:
 
-        $$1v = \sum_{i=1}^n (1c_i) b_i = \sum_{i=1}^n c_i b_i = v$$
+            $$1v = \sum_{i=1}^n (1c_i) b_i = \sum_{i=1}^n c_i b_i = v$$
 
-        <h3>Multiplication is associative</h3>
-        We want to show that \(d(ev) = (de)v\) for any scalars \(d, e\in\mathbb{R}\) and any vector \(v\in V_p\). We can show this directly:
-        $$d(ev) = d(\sum_{i=1}^n (ec_i) b_i) = \sum_{i=1}^n (d(ec_i)) b_i = \sum_{i=1}^n ((de)c_i) b_i = (de)v$$
+            <h3>Multiplication is associative</h3>
+            We want to show that \(d(ev) = (de)v\) for any scalars \(d, e\in\mathbb{R}\) and any vector \(v\in V_p\). We can show this directly:
+            $$d(ev) = d(\sum_{i=1}^n (ec_i) b_i) = \sum_{i=1}^n (d(ec_i)) b_i = \sum_{i=1}^n ((de)c_i) b_i = (de)v$$
 
-        <h3>Multiplication is linear</h3>
-        We want to show \(av+aw=a(v+w))\) for any scalar \(a\in\mathbb{R}\) and vector \(v\in V_p\). We can show this directly (&#8230; are you noticing a pattern here?):
-        $$av+aw = \sum_{i=1}^n (a{c_v}_i) b_i + \sum_{i=1}^n (a{c_w}_i) b_i=\sum_{i=1}^n (a{c_v}_i + a{c_w}_i) b_i$$
-        $$=\sum_{i=1}^n (a({c_v}_i + {c_w}_i)) b_i = a\sum_{i=1}^n ({c_v}_i + {c_w}_i) b_i = a(v+w)$$
+            <h3>Multiplication is linear</h3>
+            We want to show \(av+aw=a(v+w))\) for any scalar \(a\in\mathbb{R}\) and vector \(v\in V_p\). We can show this directly (&#8230; are you noticing a pattern here?):
+            $$av+aw = \sum_{i=1}^n (a{c_v}_i) b_i + \sum_{i=1}^n (a{c_w}_i) b_i=\sum_{i=1}^n (a{c_v}_i + a{c_w}_i) b_i$$
+            $$=\sum_{i=1}^n (a({c_v}_i + {c_w}_i)) b_i = a\sum_{i=1}^n ({c_v}_i + {c_w}_i) b_i = a(v+w)$$
 
-        <h3>Multiplication distributes over addition</h3>
-        We want to show \(dv+ev=(d+e)v\) for any scalars \(d, e\in\mathbb{R}\) and vector \(v\in V_p\). Once again, we can show this directly (I swear this is the last time):
+            <h3>Multiplication distributes over addition</h3>
+            We want to show \(dv+ev=(d+e)v\) for any scalars \(d, e\in\mathbb{R}\) and vector \(v\in V_p\). Once again, we can show this directly (I swear this is the last time):
 
-        $$dv+ev=\sum_{i=1}^n (dc_i) b_i + \sum_{i=1}^n (ec_i) b_i = \sum_{i=1}^n (dc_i + ec_i) b_i$$
-        $$= \sum_{i=1}^n ((d+e)(c_i))b_i=(d+e)\sum_{i=1}^n ((d+e)(c_i))b_i=(d+e)v$$
+            $$dv+ev=\sum_{i=1}^n (dc_i) b_i + \sum_{i=1}^n (ec_i) b_i = \sum_{i=1}^n (dc_i + ec_i) b_i$$
+            $$= \sum_{i=1}^n ((d+e)(c_i))b_i=(d+e)\sum_{i=1}^n ((d+e)(c_i))b_i=(d+e)v$$
 
-        <h3>This was a tad pointless</h3>
-        While we did show that the pronoun space is indeed a vector space, we could have avoided all this by showing this structure is identical to \(\mathbb{R}^n\), but that is no fun :).
+            <h3>This was a tad pointless</h3>
+            While we did show that the pronoun space is indeed a vector space, we could have avoided all this by showing this structure is identical to \(\mathbb{R}^n\), but that is no fun :).
+        </details>
     </body>
 </html>
