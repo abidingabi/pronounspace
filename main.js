@@ -64,8 +64,15 @@ function render_output() {
       // do not show basis vectors with a zero coefficeint
       if (coeff == 0) return null;
 
-      const coeff_text =
-        "\\frac{" + coeff + "}{\\sqrt{" + square_magnitude + "}}\\,";
+      // for case where we have an overall normalized coeff of 1, show no text
+      if (coeff * coeff == square_magnitude) {
+        return "\\overrightarrow{\\text{" + pronoun + "}}";
+      }
+
+      // check if square_magnitude is a perfect square
+      const coeff_text = Math.sqrt(square_magnitude) % 1 == 0 ?
+            "\\frac{" + coeff + "}{" + Math.sqrt(square_magnitude) + "}\\,"
+            : "\\frac{" + coeff + "}{\\sqrt{" + square_magnitude + "}}\\,";
 
       return coeff_text + "\\overrightarrow{\\text{" + pronoun + "}}";
     })
@@ -79,7 +86,6 @@ function render_output() {
 
   const nodes = [out_unnormalized, out_normalized];
 
-  MathJax.typesetClear(nodes);
   MathJax.typeset(nodes);
 }
 
